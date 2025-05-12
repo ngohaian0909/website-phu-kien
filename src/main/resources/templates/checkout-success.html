@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Thanh toán thành công</title>
+<link rel="stylesheet" th:href="@{/CSS/header.css}">
+<link rel="stylesheet" th:href="@{/CSS/footer.css}">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* CSS tùy chỉnh nếu cần */
+.container {
+	margin-top: 50px;
+}
+
+.table img {
+	max-width: 50px;
+	height: auto;
+}
+</style>
+</head>
+<body>
+	<div th:insert="~{frame/header :: header}"></div>
+
+	<div style="margin-bottom: 178px" class="container">
+		<h1 class="text-center">Thanh toán thành công!</h1>
+
+		<div th:if="${not #lists.isEmpty(cartItems)}">
+			<div class="card mb-4">
+				<div class="card-header">
+					<h4>Các sản phẩm trong giỏ hàng</h4>
+				</div>
+				<div class="card-body">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Sản phẩm</th>
+								<th>Hình ảnh</th>
+								<th>Giá</th>
+								<th>Số lượng</th>
+								<th>Tổng</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${cartItems}">
+								<td><span th:text="${item.product.productName}"></span></td>
+								<td><img th:src="@{/images/} + ${item.product.image}"
+									alt="Hình ảnh sản phẩm"></td>
+								<td><span
+									th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></td>
+								<td><span th:text="${item.quantity}"></span></td>
+								<td><span
+									th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 0, 'POINT') + ' VNĐ'}"></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div th:unless="${not #lists.isEmpty(cartItems)}">
+			<p class="text-center">Giỏ hàng của bạn trống.</p>
+		</div>
+
+		<a th:href="@{/index}" class="btn btn-primary">Tiếp tục mua sắm</a>
+	</div>
+
+	<div th:insert="~{frame/footer :: footer}"></div>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

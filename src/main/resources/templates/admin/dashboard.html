@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang quản trị</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS cho sidebar */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        #sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #f8f9fa;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        #sidebar a:hover {
+            background-color: #495057;
+            border-left: 3px solid #0d6efd;
+        }
+
+        #sidebar .nav-item {
+            margin-bottom: 5px;
+        }
+
+        /* CSS cho nội dung chính */
+        #content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* CSS cho card thống kê */
+        .stat-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .stat-card .card-header {
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .stat-card .card-body {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-card .card-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .stat-card .icon {
+            font-size: 48px;
+            opacity: 0.8;
+        }
+
+        .users-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .products-card {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        /* CSS cho biểu đồ */
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* CSS cho tiêu đề trang */
+        .page-header {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 15px;
+        }
+
+        /* CSS cho bảng */
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <nav id="sidebar" class="col-md-3 col-lg-2">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/dashboard}"><i class="fas fa-tachometer-alt me-2"></i>Trang quản trị</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users}"><i class="fas fa-users me-2"></i>Quản lý người dùng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/product/list}"><i class="fas fa-box me-2"></i>Quản lý sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/category/list}"><i class="fas fa-list me-2"></i>Quản lý danh mục</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/orders}"><i class="fas fa-file-invoice me-2"></i>Quản lý hóa đơn</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/statistical}"><i class="fas fa-chart-bar me-2"></i>Thống Kê</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main id="content" class="col-md-9 col-lg-10">
+            <div class="page-header">
+                <h1>Trang quản trị</h1>
+                <div th:if="${session.user != null}">
+                    <p class="text-muted">Xin chào, <span th:text="${session.user.fullName}"></span>!</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stat-card users-card">
+                        <div class="card-header">
+                            Tổng số người dùng
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${totalUsers}"></h5>
+                            <div class="icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card products-card">
+                        <div class="card-header">
+                            Tổng số sản phẩm
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${totalProducts}"></h5>
+                            <div class="icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Thống kê hệ thống</h3>
+                <canvas id="statisticsChart"></canvas>
+            </div>
+
+            <div class="table-container">
+                <h2>Danh sách người dùng</h2>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Họ và tên</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.userId}"></td>
+                        <td th:text="${user.userName}"></td>
+                        <td th:text="${user.fullName}"></td>
+                        <td th:text="${user.email}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lấy giá trị từ Thymeleaf để sử dụng trong biểu đồ
+        const totalUsers = /*[[${totalUsers}]]*/ 0;
+        const totalProducts = /*[[${totalProducts}]]*/ 0;
+        
+        // Tạo biểu đồ thống kê
+        const ctx = document.getElementById('statisticsChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Người dùng', 'Sản phẩm'],
+                datasets: [{
+                    label: 'Số lượng',
+                    data: [totalUsers, totalProducts],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.7)',
+                        'rgba(46, 204, 113, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(41, 128, 185, 1)',
+                        'rgba(39, 174, 96, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Thống kê người dùng và sản phẩm'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

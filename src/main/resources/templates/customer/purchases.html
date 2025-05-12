@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Order Details</title>
+<link rel="stylesheet" th:href="@{/CSS/header.css}">
+<link rel="stylesheet" th:href="@{/CSS/footer.css}">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style> /* ... your styles ...*/
+</style>
+</head>
+<body>
+	<div th:insert="~{frame/header :: header}"></div>
+	<div style="margin-bottom: 157px" class="container">
+		<h1>Order Details</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Product Name</th>
+					<th>Product image</th>
+					<th>Size</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="orderDetail : ${orderDetails}">
+					<td th:text="${orderDetail.product.productName}"></td>
+					<td><img th:src="@{/images/} + ${orderDetail.product.image}"
+						alt="Product Image" style="max-width: 50px; max-height: 50px;"></td>
+					 <td th:text="${orderDetail.size.sizeName}"></td>
+					<td th:text="${orderDetail.Quantity}"></td>
+					<td
+						th:text="${#numbers.formatDecimal(orderDetail.Price,0,'COMMA',0,'POINT')+ ' VNĐ'}"></td>
+					<td
+						th:text="${#numbers.formatDecimal(orderDetail.Price * orderDetail.Quantity,0,'COMMA',0,'POINT')+ ' VNĐ'}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<a  class="btn btn-danger" th:href="@{/order-history}">Quay về</a>
+	</div>
+	<div th:insert="~{frame/footer :: footer}"></div>
+</body>
+</html>

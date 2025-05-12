@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/CSS/header.css}">
+    <link rel="stylesheet" th:href="@{/CSS/footer.css}">
+    <style>
+        .email-form {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .email-form .form-group {
+            margin-bottom: 15px;
+        }
+        .email-form label {
+            font-weight: bold;
+        }
+        .email-form input[type="text"],
+        .email-form textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+        .email-form textarea {
+            height: 100px;
+            resize: none;
+        }
+        .email-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .email-form button:hover {
+            background-color: #0056b3;
+        }
+        .email-form input[type="checkbox"] {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div th:insert="~{frame/header :: header}"></div>
+
+    <div th:if="${message}" th:text="${message}" style="color: green; margin-bottom: 15px; text-align: center;"></div>
+
+    <form action="/mail/send" method="post" class="email-form">
+        <div class="form-group">
+            <label>From:</label>
+            <input type="text" name="from" value="WebShop <web-shop@gmail.com>">
+        </div>
+        
+        <div class="form-group">
+            <label>To:</label>
+            <input type="text" name="to" required>
+        </div>
+        
+        <div class="form-group">
+            <label>CC:</label>
+            <input type="text" name="cc">
+        </div>
+        
+        <div class="form-group">
+            <label>BCC:</label>
+            <input type="text" name="bcc">
+        </div>
+        
+        <div class="form-group">
+            <label>Subject:</label>
+            <input type="text" name="subject" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Body:</label>
+            <textarea name="body" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label>Attachments:</label>
+            <input type="text" name="filenames" placeholder="File paths separated by commas or semicolons">
+        </div>
+        
+        <div class="form-group">
+            <input type="checkbox" name="direct" id="direct">
+            <label for="direct" style="width: auto;">Send directly</label>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit">Send Email</button>
+        </div>
+    </form>
+
+    <div th:insert="~{frame/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

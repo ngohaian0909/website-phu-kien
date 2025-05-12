@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/CSS/header.css}">
+    <link rel="stylesheet" th:href="@{/CSS/footer.css}">
+    <style>
+        /* Basic Card Styling */
+        .card {
+            border: none; /* Remove default border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+            transition: transform 0.2s; /* Smooth hover effect */
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Move up slightly on hover */
+        }
+
+        .card-img-top {
+            object-fit: cover; /* Ensure image covers the entire area */
+            height: 200px; /* Set a fixed height for images */
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            color: #666; /* Slightly darker text color */
+        }
+
+        /* Pagination Styling */
+        .pagination {
+            justify-content: center; /* Center the pagination */
+            margin-top: 20px;
+        }
+
+        .page-item.active .page-link {
+            background-color: #007bff; /* Highlight active page */
+            border-color: #007bff;
+            color: white;
+        }
+
+        .page-link {
+            color: #007bff; /* Link color */
+        }
+
+        .page-link:hover {
+            color: #0056b3; /* Darker link color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div th:insert="~{frame/header :: header}"></div>
+
+	<div class="container mt-4">
+        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/images/banner1.jpg" class="d-block w-100" alt="Banner 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/banner2.jpg" class="d-block w-100" alt="Banner 2">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px" class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <form th:action="@{/index}" method="get">
+                    <div class="input-group mb-3" style="max-width: 500px;margin-left:25rem;">
+                        <input type="text" class="form-control" name="keyword"
+                               th:value="${keyword}" placeholder="Nhập tên sản phẩm cần tìm">
+                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <th:block th:each="product : ${productPage.content}">
+                <div class="col">
+                    <div class="card mb-4">
+                        <a th:href="@{/product-detail/{id}(id=${product.productId})}">
+                            <img th:src="@{/images/} + ${product.image}" class="card-img-top"
+                                 alt="Hình ảnh sản phẩm">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${product.productName}"></h5>
+                            <p class="card-text">
+                                <span th:text="${#numbers.formatDecimal(product.price,0,'COMMA',0,'POINT')+ ' VNĐ'}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+
+        <nav aria-label="Page navigation example"
+             th:if="${productPage.totalPages > 1}">
+            <ul class="pagination">
+                <li class="page-item" th:if="${productPage.hasPrevious()}"><a
+                        class="page-link"
+                        th:href="@{/index?page=} + ${productPage.number - 1} + ${keyword != null ? '&keyword=' + keyword : ''}">Trước</a>
+                </li>
+                <li class="page-item"
+                    th:each="page : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+                    th:classappend="${productPage.number == page} ? 'active'"><a
+                        class="page-link"
+                        th:href="@{/index?page=} + ${page} + ${keyword != null ? '&keyword=' + keyword : ''}"
+                        th:text="${page + 1}"></a></li>
+                <li class="page-item" th:if="${productPage.hasNext()}"><a
+                        class="page-link"
+                        th:href="@{/index?page=} + ${productPage.number + 1} + ${keyword != null ? '&keyword=' + keyword : ''}">Tiếp</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div th:insert="~{frame/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

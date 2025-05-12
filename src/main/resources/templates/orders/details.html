@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Order Details</h1>
+
+        <p><b>Order ID:</b> <span th:text="${order.orderID}"></span></p>
+        <p><b>User Name:</b> <span th:text="${order.user != null ? order.user.fullName : 'N/A'}"></span></p>
+        <p><b>Order Date:</b> <span th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy')}"></span></p>
+        <p><b>Total Amount:</b> <span th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></span></p>
+        <p><b>Status:</b> <span th:text="${order.statusId == 1 ? 'Đặt hàng thành công' : (order.statusId == 2 ? 'Đặt hàng thất bại' : order.statusId)}"></span></p>
+
+        <h2>Order Items</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Image</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="orderDetail : ${orderDetails}">
+                    <td th:text="${orderDetail.product.productName}"></td>
+                    <td><img th:src="@{/images/} + ${orderDetail.product.image}" alt="Product Image" style="max-width: 50px; max-height: 50px;"></td>
+                     <td th:text="${orderDetail.size.sizeName}"></td>
+                    <td th:text="${orderDetail.quantity}"></td>
+                    <td th:text="${#numbers.formatDecimal(orderDetail.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/orders" class="btn btn-secondary">Back to Order List</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
